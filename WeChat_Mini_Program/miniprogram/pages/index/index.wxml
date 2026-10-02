@@ -1,0 +1,189 @@
+<view class="page">
+  <!-- 顶部标题栏 -->
+  <view class="header">
+    <text class="header-title">智能家居遥控器</text>
+    <text class="header-subtitle">SmartHome Controller</text>
+  </view>
+
+  <!-- 卡片1：设备连接配置 -->
+  <view class="card">
+    <view class="card-header">
+      <text class="card-icon">📡</text>
+      <text class="card-title">设备连接</text>
+      <view class="status-badge {{hasData ? 'connected' : 'disconnected'}}">
+        <text>{{loading ? '通讯中...' : (hasData ? '已连接' : '未连接')}}</text>
+      </view>
+    </view>
+
+    <!-- IP 地址行 -->
+    <view class="input-row">
+      <text class="input-label">IP 地址</text>
+      <input
+        class="input-field"
+        type="text"
+        placeholder="192.168.4.1"
+        value="{{ip}}"
+        bindinput="onIpInput"
+        maxlength="15"
+      />
+    </view>
+
+    <!-- 端口号行 + 扫码按钮 -->
+    <view class="input-row">
+      <text class="input-label">端口号</text>
+      <input
+        class="input-field port-input"
+        type="number"
+        placeholder="80"
+        value="{{port}}"
+        bindinput="onPortInput"
+        maxlength="5"
+      />
+      <button class="scan-btn" bindtap="onScanQRCode" size="mini">
+        <text class="scan-icon">📷</text>
+        <text>扫码</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 卡片2：设备状态 -->
+  <view class="card">
+    <view class="card-header">
+      <text class="card-icon">📊</text>
+      <text class="card-title">设备状态</text>
+    </view>
+
+    <view wx:if="{{!hasData}}" class="empty-state">
+      <text class="empty-icon">🔌</text>
+      <text class="empty-text">点击下方「查询全部状态」获取设备数据</text>
+    </view>
+
+    <view wx:else class="status-grid">
+      <!-- 温度 -->
+      <view class="status-item">
+        <text class="status-icon">🌡️</text>
+        <view class="status-info">
+          <text class="status-label">温度</text>
+          <text class="status-value temperature">{{sensorData.temperature}} ℃</text>
+        </view>
+      </view>
+
+      <!-- 湿度 -->
+      <view class="status-item">
+        <text class="status-icon">💧</text>
+        <view class="status-info">
+          <text class="status-label">湿度</text>
+          <text class="status-value humidity">{{sensorData.humidity}} %</text>
+        </view>
+      </view>
+
+      <!-- 电量 -->
+      <view class="status-item">
+        <text class="status-icon">🔋</text>
+        <view class="status-info">
+          <text class="status-label">电量</text>
+          <view class="battery-bar-wrap">
+            <view class="battery-bar" style="width: {{sensorData.battery}}%;"></view>
+          </view>
+          <text class="status-value battery">{{sensorData.battery}} %</text>
+        </view>
+      </view>
+
+      <!-- 继电器 -->
+      <view class="status-item">
+        <text class="status-icon">⚡</text>
+        <view class="status-info">
+          <text class="status-label">继电器</text>
+          <text class="status-value {{sensorData.relay === 1 ? 'state-on' : 'state-off'}}">
+            {{sensorData.relay === 1 ? '已打开' : '已关闭'}}
+          </text>
+        </view>
+      </view>
+
+      <!-- 红外发射管 -->
+      <view class="status-item">
+        <text class="status-icon">🔴</text>
+        <view class="status-info">
+          <text class="status-label">红外发射管</text>
+          <text class="status-value {{sensorData.ir === 1 ? 'state-on' : 'state-off'}}">
+            {{sensorData.ir === 1 ? '已打开' : '已关闭'}}
+          </text>
+        </view>
+      </view>
+
+      <!-- 人体感应 -->
+      <view class="status-item">
+        <text class="status-icon">🚶</text>
+        <view class="status-info">
+          <text class="status-label">人体感应</text>
+          <text class="status-value {{sensorData.pir === 1 ? 'state-on' : 'state-off'}}">
+            {{sensorData.pir === 1 ? '有人' : '无人'}}
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 卡片3：控制按钮 -->
+  <view class="card">
+    <view class="card-header">
+      <text class="card-icon">🎮</text>
+      <text class="card-title">设备控制</text>
+    </view>
+
+    <view class="ctrl-grid">
+      <!-- 查询全部状态 -->
+      <button class="ctrl-btn query-btn" bindtap="onQueryStatus" loading="{{loading}}" disabled="{{loading}}">
+        <text class="ctrl-btn-icon">🔄</text>
+        <text class="ctrl-btn-text">查询全部状态</text>
+      </button>
+
+      <!-- 打开红外 -->
+      <button class="ctrl-btn ir-on-btn" bindtap="onIROn" disabled="{{loading}}">
+        <text class="ctrl-btn-icon">🔴</text>
+        <text class="ctrl-btn-text">打开红外发射管</text>
+      </button>
+
+      <!-- 关闭红外 -->
+      <button class="ctrl-btn ir-off-btn" bindtap="onIROff" disabled="{{loading}}">
+        <text class="ctrl-btn-icon">⚫</text>
+        <text class="ctrl-btn-text">关闭红外发射管</text>
+      </button>
+
+      <!-- 打开继电器 -->
+      <button class="ctrl-btn relay-on-btn" bindtap="onRelayOn" disabled="{{loading}}">
+        <text class="ctrl-btn-icon">🔛</text>
+        <text class="ctrl-btn-text">打开继电器</text>
+      </button>
+
+      <!-- 关闭继电器 -->
+      <button class="ctrl-btn relay-off-btn" bindtap="onRelayOff" disabled="{{loading}}">
+        <text class="ctrl-btn-icon">📴</text>
+        <text class="ctrl-btn-text">关闭继电器</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 卡片4：通信日志 -->
+  <view class="card log-card">
+    <view class="card-header">
+      <text class="card-icon">📝</text>
+      <text class="card-title">通信日志</text>
+      <text class="log-count">{{logs.length}} 条</text>
+    </view>
+
+    <scroll-view class="log-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+      <view wx:if="{{logs.length === 0}}" class="empty-state small">
+        <text class="empty-text">操作设备后将在此显示通信记录</text>
+      </view>
+
+      <view wx:for="{{logs}}" wx:key="index" class="log-entry">
+        <text class="log-time">[{{item.time}}]</text>
+        <text class="log-text log-{{item.type}}">{{item.text}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 底部留白 -->
+  <view class="bottom-spacer"></view>
+</view>

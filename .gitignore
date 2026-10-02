@@ -1,0 +1,21 @@
+# 微信开发者工具 / 小程序
+WeChat_Mini_Program/project.private.config.json
+WeChat_Mini_Program/node_modules/
+WeChat_Mini_Program/.workbuddy/
+*.wxapkg
+
+# Arduino / C++ 构建产物
+Code/**/*.o
+Code/**/*.d
+Code/**/build/
+*.elf
+*.bin
+
+# Python
+__pycache__/
+*.pyc
+
+# 系统文件
+Thumbs.db
+.DS_Store
+desktop.ini

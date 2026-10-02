@@ -1,0 +1,20 @@
+/* 全局样式 */
+page {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+/* 全局 input placeholder 样式 */
+input::placeholder {
+  color: #bbb;
+}
+
+/* 隐藏 scroll-view 滚动条 */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
